@@ -1,0 +1,29 @@
+name: LR7 TCP-UDP proxy firewall tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Syntax verification
+        run: python -m compileall -q firewall.py proxy.py rule_engine.py eventlog.py fwctl.py analyze_logs.py tools tests
+      - name: Unit and real-socket integration tests
+        run: python -m unittest discover -s tests -v
+      - name: TCP UDP live demo (ephemeral local ports)
+        run: python -m tools.run_demo --out reports/ci-demo.json
+      - name: Confirm local secrets are not included
+        run: |
+          test ! -e .firewall/admin.token
+          test ! -e config.json

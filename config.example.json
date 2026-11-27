@@ -1,0 +1,12 @@
+{
+  "admin": {"host": "127.0.0.1", "port": 18081},
+  "logging": {"path": "logs/events.jsonl"},
+  "default_action": "allow",
+  "services": [
+    {"proto": "TCP", "listen_ip": "127.0.0.1", "listen_port": 18080,
+     "target_ip": "127.0.0.1", "target_port": 19080},
+    {"proto": "UDP", "listen_ip": "127.0.0.1", "listen_port": 15353,
+     "target_ip": "127.0.0.1", "target_port": 19053}
+  ],
+  "rules": []
+}
